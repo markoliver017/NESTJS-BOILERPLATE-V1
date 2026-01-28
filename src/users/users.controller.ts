@@ -46,6 +46,12 @@ export class UsersController {
     return 'Only admins can see this';
   }
 
+  @Get('email/:email')
+  @nestjsBetterAuth.AllowAnonymous()
+  findOneByEmail(@Param('email') email: string) {
+    return this.usersService.findOneByEmail(email);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);

@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -51,6 +55,16 @@ export class UsersService {
 
   async findAll() {
     return await db.query.user.findMany();
+  }
+
+  async findOneByEmail(email: string) {
+    const user = await db.query.user.findFirst({
+      where: eq(userTable.email, email),
+    });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
   }
 
   async findOne(id: string) {
