@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "seed-user": "ts-node drizzle/seed/user.seed.ts",
     "seed-audit": "ts-node drizzle/seed/audit.seed.ts",
+    "seed-app": "ts-node drizzle/seed/app.seed.ts",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

@@ -8,7 +8,7 @@ import { CreateAudittrailDto } from './dto/create-audittrail.dto';
 import { FindAudittrailDto } from './dto/find-audittrail.dto';
 import { UpdateAudittrailDto } from './dto/update-audittrail.dto';
 import { db } from 'src/db';
-import { auditTrails } from 'src/db/schema';
+import { auditTrails } from 'src/db/audit-schema';
 import { and, asc, desc, eq } from 'drizzle-orm';
 
 @Injectable()
