@@ -8,7 +8,10 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  Query,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -31,13 +34,23 @@ export class UsersController {
   }
 
   @Get()
-  findAll(
-    @nestjsBetterAuth.Session() UserSession: nestjsBetterAuth.UserSession,
+  async findAll(
+    @Query('q') q?: string,
+    @Query('_page') page?: string,
+    @Query('_limit') limit?: string,
+    @Res({ passthrough: true }) res?: Response,
   ) {
-    console.log('UserSession>>>>>>>>>>>>', UserSession);
-    const { session } = UserSession;
-    console.log('Session>>>>>>>>>>>>', session);
-    return this.usersService.findAll();
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 10;
+
+    const result = await this.usersService.findAll(q, pageNum, limitNum);
+
+    // Set X-Total-Count header for pagination
+    if (res) {
+      res.setHeader('X-Total-Count', result.total.toString());
+    }
+
+    return result.data;
   }
 
   @Get('admin')
@@ -65,8 +78,8 @@ export class UsersController {
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @nestjsBetterAuth.Session() UserSession: nestjsBetterAuth.UserSession,
+    @nestjsBetterAuth.Session() userSession: nestjsBetterAuth.UserSession,
   ) {
-    return this.usersService.remove(id, UserSession);
+    return this.usersService.remove(id, userSession);
   }
 }

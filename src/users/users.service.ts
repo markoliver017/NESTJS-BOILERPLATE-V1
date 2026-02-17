@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { db } from 'src/db';
-import { eq } from 'drizzle-orm';
+import { eq, ilike, or, sql } from 'drizzle-orm';
 import { user as userTable } from 'src/db/auth-schema';
 import { AudittrailService } from '../audittrail/audittrail.service';
 import { UserSession } from '@thallesp/nestjs-better-auth';
@@ -53,8 +53,32 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    return await db.query.user.findMany();
+  async findAll(q?: string, page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    // Build where clause for search
+    const whereClause = q
+      ? or(ilike(userTable.name, `%${q}%`), ilike(userTable.email, `%${q}%`))
+      : undefined;
+
+    // Fetch paginated data
+    const data = await db
+      .select()
+      .from(userTable)
+      .where(whereClause)
+      .limit(limit)
+      .offset(offset);
+
+    // Count total records
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(userTable)
+      .where(whereClause);
+
+    return {
+      data,
+      total: Number(count),
+    };
   }
 
   async findOneByEmail(email: string) {
