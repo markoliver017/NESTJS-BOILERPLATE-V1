@@ -15,6 +15,7 @@ import { TheatersModule } from './theaters/theaters.module';
 import { TaxRulesModule } from './tax-rules/tax-rules.module';
 import { CinemaFormatsModule } from './cinema-formats/cinema-formats.module';
 import { CinemaFormatMapModule } from './cinema-format-map/cinema-format-map.module';
+import { ProductionCompaniesModule } from './movie-production-companies/production-companies.module';
 // const MovieFormatMapModule = ... // Will be implemented in Phase 8
 
 @Module({
@@ -34,6 +35,7 @@ import { CinemaFormatMapModule } from './cinema-format-map/cinema-format-map.mod
     TaxRulesModule,
     CinemaFormatsModule,
     CinemaFormatMapModule,
+    ProductionCompaniesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

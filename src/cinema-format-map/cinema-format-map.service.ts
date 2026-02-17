@@ -140,7 +140,7 @@ export class CinemaFormatMapService {
     }
   }
 
-  async remove(id: number, userId: string) {
+  async remove(id: number, _userId: string) {
     try {
       const [deleted] = await db
         .delete(cinemaFormatMapTable)
@@ -148,7 +148,7 @@ export class CinemaFormatMapService {
         .returning();
 
       await this.audittrailService.log({
-        userId,
+        userId: _userId,
         controller: 'cinema-format-map',
         action: 'delete',
         details: `Deleted assignment id ${id}`,
@@ -158,7 +158,7 @@ export class CinemaFormatMapService {
       return deleted;
     } catch (error) {
       await this.audittrailService.log({
-        userId,
+        userId: _userId,
         controller: 'cinema-format-map',
         action: 'delete',
         details: `Failed to delete assignment id ${id}`,
@@ -173,7 +173,7 @@ export class CinemaFormatMapService {
   private async ensureSinglePrimary(
     cinemaId: number,
     excludeId: number | null,
-    userId: string,
+    _userId: string,
   ) {
     // Option 1: Error if another primary exists (strict)
     // Option 2: Auto-unset others (user friendly) -> Choosing Option 2
